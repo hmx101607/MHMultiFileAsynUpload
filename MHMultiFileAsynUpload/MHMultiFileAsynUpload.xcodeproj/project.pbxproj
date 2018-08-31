@@ -15,6 +15,11 @@
 		938644132136943E0039734C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 938644122136943E0039734C /* main.m */; };
 		9386441E213694970039734C /* MHUploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9386441A213694970039734C /* MHUploadManager.m */; };
 		9386441F213694970039734C /* MHURLSessionTaskOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9386441C213694970039734C /* MHURLSessionTaskOperation.m */; };
+		938644222136FA3F0039734C /* MHUploadModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 938644212136FA3F0039734C /* MHUploadModel.m */; };
+		938AA8662137CDA600F098B2 /* MHUploadFileDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 938AA8652137CDA600F098B2 /* MHUploadFileDatabase.m */; };
+		938AA86A2137CE2B00F098B2 /* MHUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 938AA8692137CE2A00F098B2 /* MHUtil.m */; };
+		938AA86D2137D10B00F098B2 /* MHImageItemCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 938AA86C2137D10B00F098B2 /* MHImageItemCollectionViewCell.m */; };
+		938AA86F2137D11A00F098B2 /* MHImageItemCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 938AA86E2137D11A00F098B2 /* MHImageItemCollectionViewCell.xib */; };
 		A211FF8669C2459003E45735 /* libPods-MHMultiFileAsynUpload.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA9B405B783031D9926D10BF /* libPods-MHMultiFileAsynUpload.a */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +40,15 @@
 		9386441B213694970039734C /* MHURLSessionTaskOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHURLSessionTaskOperation.h; sourceTree = "<group>"; };
 		9386441C213694970039734C /* MHURLSessionTaskOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHURLSessionTaskOperation.m; sourceTree = "<group>"; };
 		9386441D213694970039734C /* MHUploadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHUploadManager.h; sourceTree = "<group>"; };
+		938644202136FA3F0039734C /* MHUploadModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MHUploadModel.h; sourceTree = "<group>"; };
+		938644212136FA3F0039734C /* MHUploadModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MHUploadModel.m; sourceTree = "<group>"; };
+		938AA8642137CDA600F098B2 /* MHUploadFileDatabase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MHUploadFileDatabase.h; sourceTree = "<group>"; };
+		938AA8652137CDA600F098B2 /* MHUploadFileDatabase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MHUploadFileDatabase.m; sourceTree = "<group>"; };
+		938AA8682137CE2A00F098B2 /* MHUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHUtil.h; sourceTree = "<group>"; };
+		938AA8692137CE2A00F098B2 /* MHUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHUtil.m; sourceTree = "<group>"; };
+		938AA86B2137D10B00F098B2 /* MHImageItemCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MHImageItemCollectionViewCell.h; sourceTree = "<group>"; };
+		938AA86C2137D10B00F098B2 /* MHImageItemCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MHImageItemCollectionViewCell.m; sourceTree = "<group>"; };
+		938AA86E2137D11A00F098B2 /* MHImageItemCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MHImageItemCollectionViewCell.xib; sourceTree = "<group>"; };
 		DA9B405B783031D9926D10BF /* libPods-MHMultiFileAsynUpload.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MHMultiFileAsynUpload.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -88,6 +102,7 @@
 		938644022136943C0039734C /* MHMultiFileAsynUpload */ = {
 			isa = PBXGroup;
 			children = (
+				938AA8672137CE2A00F098B2 /* util */,
 				93864419213694970039734C /* upload */,
 				938644032136943C0039734C /* AppDelegate.h */,
 				938644042136943C0039734C /* AppDelegate.m */,
@@ -98,6 +113,9 @@
 				9386440E2136943E0039734C /* LaunchScreen.storyboard */,
 				938644112136943E0039734C /* Info.plist */,
 				938644122136943E0039734C /* main.m */,
+				938AA86B2137D10B00F098B2 /* MHImageItemCollectionViewCell.h */,
+				938AA86C2137D10B00F098B2 /* MHImageItemCollectionViewCell.m */,
+				938AA86E2137D11A00F098B2 /* MHImageItemCollectionViewCell.xib */,
 			);
 			path = MHMultiFileAsynUpload;
 			sourceTree = "<group>";
@@ -109,8 +127,21 @@
 				9386441A213694970039734C /* MHUploadManager.m */,
 				9386441B213694970039734C /* MHURLSessionTaskOperation.h */,
 				9386441C213694970039734C /* MHURLSessionTaskOperation.m */,
+				938644202136FA3F0039734C /* MHUploadModel.h */,
+				938644212136FA3F0039734C /* MHUploadModel.m */,
+				938AA8642137CDA600F098B2 /* MHUploadFileDatabase.h */,
+				938AA8652137CDA600F098B2 /* MHUploadFileDatabase.m */,
 			);
 			path = upload;
+			sourceTree = "<group>";
+		};
+		938AA8672137CE2A00F098B2 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				938AA8682137CE2A00F098B2 /* MHUtil.h */,
+				938AA8692137CE2A00F098B2 /* MHUtil.m */,
+			);
+			path = util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,6 +204,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				938AA86F2137D11A00F098B2 /* MHImageItemCollectionViewCell.xib in Resources */,
 				938644102136943E0039734C /* LaunchScreen.storyboard in Resources */,
 				9386440D2136943E0039734C /* Assets.xcassets in Resources */,
 				9386440B2136943C0039734C /* Main.storyboard in Resources */,
@@ -239,8 +271,12 @@
 			files = (
 				938644082136943C0039734C /* ViewController.m in Sources */,
 				9386441E213694970039734C /* MHUploadManager.m in Sources */,
+				938AA86D2137D10B00F098B2 /* MHImageItemCollectionViewCell.m in Sources */,
 				938644132136943E0039734C /* main.m in Sources */,
+				938644222136FA3F0039734C /* MHUploadModel.m in Sources */,
 				9386441F213694970039734C /* MHURLSessionTaskOperation.m in Sources */,
+				938AA8662137CDA600F098B2 /* MHUploadFileDatabase.m in Sources */,
+				938AA86A2137CE2B00F098B2 /* MHUtil.m in Sources */,
 				938644052136943C0039734C /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -385,6 +421,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZG6FYMRQ49;
 				INFOPLIST_FILE = MHMultiFileAsynUpload/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -403,6 +440,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZG6FYMRQ49;
 				INFOPLIST_FILE = MHMultiFileAsynUpload/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

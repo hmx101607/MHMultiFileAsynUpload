@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" systemVersion="17A277" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -9,16 +12,106 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FTC-9J-U3Z">
+                                <rect key="frame" x="156" y="537" width="62" height="30"/>
+                                <state key="normal" title="选择视频"/>
+                                <connections>
+                                    <action selector="chooseVideoAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8nT-x0-BHa"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RK1-vK-s4l">
+                                <rect key="frame" x="54" y="537" width="62" height="30"/>
+                                <state key="normal" title="选择照片"/>
+                                <connections>
+                                    <action selector="choosePictureAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1xF-L9-EcK"/>
+                                </connections>
+                            </button>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="I2a-je-OiE">
+                                <rect key="frame" x="0.0" y="64" width="375" height="443"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="oLB-XJ-Ybm">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="b88-gS-iD7">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </view>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="181-YB-Xmu">
+                                <rect key="frame" x="156" y="597" width="62" height="30"/>
+                                <state key="normal" title="上传文件"/>
+                                <connections>
+                                    <action selector="uploadFileAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="o4h-T4-951"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hMn-Bn-Hzd">
+                                <rect key="frame" x="54" y="597" width="62" height="30"/>
+                                <state key="normal" title="暂停上传"/>
+                                <connections>
+                                    <action selector="suspendFileAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="NB3-ew-fwU"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zLi-Ig-cpj">
+                                <rect key="frame" x="258" y="597" width="62" height="30"/>
+                                <state key="normal" title="取消上传"/>
+                                <connections>
+                                    <action selector="cancelFileAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LDF-qh-CVw"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l1G-uK-WdZ">
+                                <rect key="frame" x="20" y="507" width="335" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="5rT-lS-Iqn"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="FTC-9J-U3Z" firstAttribute="top" secondItem="I2a-je-OiE" secondAttribute="bottom" constant="30" id="1D2-at-uh3"/>
+                            <constraint firstItem="RK1-vK-s4l" firstAttribute="centerY" secondItem="FTC-9J-U3Z" secondAttribute="centerY" id="59U-2y-2WR"/>
+                            <constraint firstItem="I2a-je-OiE" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="66l-1Q-AUe"/>
+                            <constraint firstItem="I2a-je-OiE" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="64" id="8Co-fv-c1d"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="FTC-9J-U3Z" secondAttribute="bottom" constant="100" id="A0f-44-NOS"/>
+                            <constraint firstItem="hMn-Bn-Hzd" firstAttribute="centerY" secondItem="181-YB-Xmu" secondAttribute="centerY" id="EmX-we-fu9"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="181-YB-Xmu" secondAttribute="bottom" constant="40" id="H4i-6Y-W0q"/>
+                            <constraint firstItem="zLi-Ig-cpj" firstAttribute="centerY" secondItem="181-YB-Xmu" secondAttribute="centerY" id="L4Z-6H-0DS"/>
+                            <constraint firstItem="l1G-uK-WdZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="Ny3-MW-9BA"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="l1G-uK-WdZ" secondAttribute="trailing" constant="20" id="V0Z-mh-FLB"/>
+                            <constraint firstItem="FTC-9J-U3Z" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Wso-Fa-tNE"/>
+                            <constraint firstItem="FTC-9J-U3Z" firstAttribute="leading" secondItem="RK1-vK-s4l" secondAttribute="trailing" constant="40" id="ZZ2-d0-6kd"/>
+                            <constraint firstItem="181-YB-Xmu" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="c4G-G0-8hg"/>
+                            <constraint firstItem="l1G-uK-WdZ" firstAttribute="top" secondItem="I2a-je-OiE" secondAttribute="bottom" id="dIG-o3-Qei"/>
+                            <constraint firstItem="I2a-je-OiE" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="o4U-iZ-Jpc"/>
+                            <constraint firstItem="zLi-Ig-cpj" firstAttribute="leading" secondItem="181-YB-Xmu" secondAttribute="trailing" constant="40" id="s9N-Xk-HiE"/>
+                            <constraint firstItem="181-YB-Xmu" firstAttribute="leading" secondItem="hMn-Bn-Hzd" secondAttribute="trailing" constant="40" id="zjL-8S-TsZ"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="collectionView" destination="I2a-je-OiE" id="AL9-0G-qRO"/>
+                        <outlet property="tipLabel" destination="l1G-uK-WdZ" id="67U-dj-3dA"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="132" y="31.934032983508249"/>
         </scene>
     </scenes>
 </document>

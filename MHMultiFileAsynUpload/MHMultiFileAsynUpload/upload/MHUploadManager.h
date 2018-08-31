@@ -7,19 +7,27 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+#import "MHUploadModel.h"
 
 typedef void(^uploadSuccessBlock)(id responseObject);
 typedef void(^uploadFailureBlock)(NSError *error);
 typedef  void(^uploadProgressBlock)(NSInteger *index, NSProgress *uploadProgress);
 
+
+@protocol MHUploadManagerDelegate <NSObject>
+
+- (void)uploadStartWithUploadModel:(MHUploadModel *)uploadModel;
+- (void)uploadProgressWithUploadModel:(MHUploadModel *)uploadModel;
+- (void)uploadCompletionWithUploadModel:(MHUploadModel *)uploadModel error:(NSError *)error;
+
+@end
+
+
 @interface MHUploadManager : NSObject
 
+@property (weak, nonatomic) id<MHUploadManagerDelegate>delegate;
 
-
-+ (void) uploadImages:(NSArray *)images
-             progress:(uploadProgressBlock)uploadProgressBlock
-              success:(uploadSuccessBlock)successBlock
-              failure:(uploadFailureBlock)failureBlock;
++ (instancetype)shareManager;
 
 /**
  最大并发数
@@ -27,6 +35,13 @@ typedef  void(^uploadProgressBlock)(NSInteger *index, NSProgress *uploadProgress
  @param count 数值
  */
 + (void)setMaxConcurrentOperationCount:(NSInteger)count;
+
+/**
+ 添加队列
+
+ @param uploadModel 对象
+ */
+- (void)addDownloadQueue:(MHUploadModel *)uploadModel;
 
 /**
  上传地址

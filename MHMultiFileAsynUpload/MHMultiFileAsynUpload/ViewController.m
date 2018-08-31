@@ -7,8 +7,28 @@
 //
 
 #import "ViewController.h"
+#import <Photos/Photos.h>
+#import "MHImageItemCollectionViewCell.h"
+#import "MHUploadModel.h"
+#import "MHUploadManager.h"
+
+#define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
+#define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
 @interface ViewController ()
+<
+UINavigationControllerDelegate,
+UIImagePickerControllerDelegate,
+UICollectionViewDelegate,
+UICollectionViewDataSource,
+UICollectionViewDelegateFlowLayout,
+MHUploadManagerDelegate
+>
+
+/** <##> */
+@property (strong, nonatomic) NSMutableArray *fileArray;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UILabel *tipLabel;
 
 @end
 
@@ -16,14 +36,122 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    [self.collectionView registerNib:[UINib nibWithNibName:NSStringFromClass([MHImageItemCollectionViewCell class]) bundle:nil] forCellWithReuseIdentifier:NSStringFromClass([MHImageItemCollectionViewCell class])];
+    self.collectionView.delegate = self;
+    self.collectionView.dataSource = self;
+    
+    [MHUploadManager shareManager].delegate = self;
+}
+
+- (IBAction)choosePictureAction:(id)sender {
+    UIImagePickerController *pickerVC = [[UIImagePickerController alloc] init];
+    pickerVC.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+    pickerVC.delegate = self;
+    [self presentViewController:pickerVC animated:YES completion:nil];
+}
+
+- (IBAction)chooseVideoAction:(id)sender {
+    UIImagePickerController *pickerVC = [[UIImagePickerController alloc] init];
+    pickerVC.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+    pickerVC.delegate = self;
+    pickerVC.mediaTypes = [NSArray arrayWithObjects:@"public.movie", nil];
+    [self presentViewController:pickerVC animated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    NSURL *url = [info objectForKey:UIImagePickerControllerReferenceURL];
+    PHFetchResult *fetchResult = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
+    PHAsset *asset = fetchResult.firstObject;
+    [self.fileArray addObject:asset];
+    __weak typeof(self) weakSelf = self;
+    [picker dismissViewControllerAnimated:YES completion:^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [strongSelf.collectionView reloadData];
+    }];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)uploadFileAction:(id)sender {
+    for (NSInteger i = 0; i < self.fileArray.count; i++) {
+        MHUploadModel *uploadModel = [MHUploadModel assetConvertUploadModel:self.fileArray[i]];
+        [[MHUploadManager shareManager] addDownloadQueue:uploadModel];
+    }
+}
+
+- (IBAction)suspendFileAction:(id)sender {
+    
+}
+
+- (IBAction)cancelFileAction:(id)sender {
+    
+}
+
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return self.fileArray.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    MHImageItemCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([MHImageItemCollectionViewCell class]) forIndexPath:indexPath];
+    //正常来说，这里不会这么写，demo就别介意了
+    MHUploadModel *uploadModel = [MHUploadModel assetConvertUploadModel:self.fileArray[indexPath.row]];
+    [cell.imageView setImage:[UIImage imageWithData:uploadModel.fileData]];
+    return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    CGFloat widht = (SCREEN_WIDTH - 5) / 4;
+    return CGSizeMake(widht, widht);
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    return 1;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+    return 1;
+}
+
+- (void)uploadStartWithUploadModel:(MHUploadModel *)uploadModel {
+    NSLog(@"%s : 开始下载", __func__);
+}
+
+- (void)uploadProgressWithUploadModel:(MHUploadModel *)uploadModel {
+    self.tipLabel.text = [NSString stringWithFormat:@"%.0f%%-%@", uploadModel.currentSize * 1.0 / uploadModel.totalSize * 1.0 * 100, uploadModel.fileName];
+}
+
+- (void)uploadCompletionWithUploadModel:(MHUploadModel *)uploadModel error:(NSError *)error {
+    NSLog(@"%s : 完成下载", __func__);
+}
+
+
+- (NSMutableArray *)fileArray {
+    if (!_fileArray) {
+        _fileArray = [NSMutableArray array];
+    }
+    return _fileArray;
 }
 
 
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
