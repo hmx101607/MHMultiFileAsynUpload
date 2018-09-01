@@ -32,4 +32,52 @@
 
 + (NSString *)stringWithUUID;
 + (NSString *)typeForImageData:(NSData *)data;
+
+
+/**
+ NSDictionary 转json
+
+ @param dict NSDictionary
+ @return json
+ */
++(NSString *)dictToJsonStr:(NSDictionary *)dict;
+
+/**
+ *  JSON字符串转NSDictionary
+ *
+ *  @param jsonString JSON字符串
+ *
+ *  @return NSDictionary
+ */
++ (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;
+
+/**
+ *  字典转JSON字符串
+ *
+ *  @param dic 字典
+ *
+ *  @return JSON字符串
+ */
++ (NSString*)dictionaryToJson:(NSDictionary *)dic;
+
+
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

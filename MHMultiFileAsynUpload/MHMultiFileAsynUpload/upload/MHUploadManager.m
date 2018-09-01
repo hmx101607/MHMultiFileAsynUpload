@@ -10,6 +10,15 @@
 #import <AFNetworking/AFNetworking.h>
 #import "MHUtil.h"
 
+/*
+ 1.选择图片开始上传后，添加到队列并同时保存到数据（等待上传状态）
+ 2.正在执行上传，修改数据库中上传的状态
+ 3.暂停上传，修改数据库状态为暂停，移除出上传队列
+ 4.上传失败，修改数据库状态为失败，移除出上传队列
+ 5.上传成功，修改数据库状态为成功，并保存放回的路径，移除出上传队列
+ 6.该组数据上传成功，返回上传完成
+ */
+
 #define kMaxConcurrentOperationCount 3
 
 @interface MHUploadManager ()
@@ -64,6 +73,7 @@ NSURLSessionDataDelegate
     uploadModel.filePath = path;
     BOOL success = [[NSFileManager defaultManager] createFileAtPath:path contents:uploadModel.fileData attributes:nil];
     if (success) {
+        //
         [self.uploadTasks addObject:uploadModel];
         [self startUploadWithModel:uploadModel];
     }

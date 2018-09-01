@@ -43,25 +43,12 @@ typedef  void(^uploadProgressBlock)(NSInteger *index, NSProgress *uploadProgress
  */
 - (void)addDownloadQueue:(MHUploadModel *)uploadModel;
 
-/**
- 上传地址
 
- @param requestUrl
- */
-+ (void)setUploadRequestUrl:(NSString *)requestUrl;
-
-/**
- 自定义参数
-
- @param customParameter
- */
-+ (void)setCustomParameter:(NSDictionary *)customParameter;
-
-/** 取消上传 */
-+ (void)cancel;
-/** 取消上传 */
-+ (void)suspend;
-/** 重新开始上传 */
-+ (void)restart;
+///** 取消上传 */
+//+ (void)cancel;
+///** 取消上传 */
+//+ (void)suspend;
+///** 重新开始上传 */
+//+ (void)restart;
 
 @end

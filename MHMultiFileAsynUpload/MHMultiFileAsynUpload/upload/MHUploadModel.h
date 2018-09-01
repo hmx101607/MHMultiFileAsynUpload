@@ -43,22 +43,23 @@ typedef NS_ENUM(NSInteger, MHUploadStatus) {
 @property (strong, nonatomic) NSString *fileName;
 /** 本地沙盒路径 */
 @property (strong, nonatomic) NSString *filePath;
+/** 文件类型 */
+@property (assign, nonatomic) MHUploadFileType uploadFileType;
+/** 上传状态 */
+@property (assign, nonatomic) MHUploadStatus uploadStatus;
+/** 服务器地址 */
+@property (strong, nonatomic) NSString *uploadRequestUrl;
+/** 自定义参数 */
+@property (strong, nonatomic) NSDictionary *customParameter;
+
 /** NSData */
 @property (strong, nonatomic) NSData * fileData;
 /** 总大小 : KB */
 @property (assign, nonatomic) NSInteger totalSize;
 /** 当前下载大小 : KB */
 @property (assign, nonatomic) NSInteger currentSize;
-/** 文件类型 */
-@property (assign, nonatomic) MHUploadFileType uploadFileType;
-/** 上传状态 */
-@property (assign, nonatomic) MHUploadStatus uploadStatus;
 /** <##> */
 @property (strong, nonatomic) NSURLSessionDataTask *task;
-/** 服务器地址 */
-@property (strong, nonatomic) NSString *uploadRequestUrl;
-/** 自定义参数 */
-@property (strong, nonatomic) NSDictionary *customParameter;
 
 
 + (MHUploadModel *)assetConvertUploadModel:(PHAsset *)asset
