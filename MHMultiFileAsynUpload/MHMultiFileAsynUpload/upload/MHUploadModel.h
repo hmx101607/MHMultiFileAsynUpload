@@ -55,8 +55,23 @@ typedef NS_ENUM(NSInteger, MHUploadStatus) {
 @property (assign, nonatomic) MHUploadStatus uploadStatus;
 /** <##> */
 @property (strong, nonatomic) NSURLSessionDataTask *task;
+/** 服务器地址 */
+@property (strong, nonatomic) NSString *uploadRequestUrl;
+/** 自定义参数 */
+@property (strong, nonatomic) NSDictionary *customParameter;
 
 
-+ (MHUploadModel *)assetConvertUploadModel:(PHAsset *)asset;
-
++ (MHUploadModel *)assetConvertUploadModel:(PHAsset *)asset
+                          uploadRequestUrl:(NSString *)uploadRequestUrl
+                           customParameter:(NSDictionary *)customParameter;
 @end
+
+
+
+
+
+
+
+
+
+

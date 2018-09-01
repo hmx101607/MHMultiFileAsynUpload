@@ -12,8 +12,12 @@
 @implementation MHUploadModel
 
 
-+ (MHUploadModel *)assetConvertUploadModel:(PHAsset *)asset {
++ (MHUploadModel *)assetConvertUploadModel:(PHAsset *)asset
+                          uploadRequestUrl:(NSString *)uploadRequestUrl
+                           customParameter:(NSDictionary *)customParameter {
     __block MHUploadModel *uploadModel = [MHUploadModel new];
+    uploadModel.uploadRequestUrl = uploadRequestUrl;
+    uploadModel.customParameter = customParameter;
     if (asset.mediaType == PHAssetMediaTypeImage) {
         PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
         options.version = PHImageRequestOptionsVersionCurrent;
@@ -22,11 +26,12 @@
         uploadModel.uploadFileType = MHUploadFileTypeImage;
         [[PHImageManager defaultManager] requestImageDataForAsset:asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
             uploadModel.fileData = imageData;
-            uploadModel.fileName = [NSString stringWithFormat:@"%@.%@", [MHUtil stringWithUUID], [MHUtil typeForImageData:imageData]];
+//            uploadModel.fileName = [NSString stringWithFormat:@"%@.%@", [MHUtil stringWithUUID], [MHUtil typeForImageData:imageData]];
+            uploadModel.fileName = [NSString stringWithFormat:@"%@.png", [MHUtil stringWithUUID]];
         }];
     } else if (asset.mediaType == PHAssetMediaTypeVideo) {
         PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
-        options.version = PHImageRequestOptionsVersionCurrent;
+        options.version = PHImageRequestOptionsVersionOriginal;
         options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
         uploadModel.uploadFileType = MHUploadFileTypeVideo;
         [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {

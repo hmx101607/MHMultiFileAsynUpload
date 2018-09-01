@@ -60,10 +60,24 @@ MHUploadManagerDelegate
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-    NSURL *url = [info objectForKey:UIImagePickerControllerReferenceURL];
+    NSURL *url = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     PHFetchResult *fetchResult = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
     PHAsset *asset = fetchResult.firstObject;
-    [self.fileArray addObject:asset];
+    
+    
+    NSString * uploadRequestUrl = @"http://116.249.89.74:9090/xyrcf/api/v1/FileRest/upload/?access_token=c8dd4d40-fbc8-408f-b332-b7c57bec0b64";
+    NSDictionary * customParameter = nil;
+    if (asset.mediaType == PHAssetMediaTypeImage) {
+        customParameter = @{@"pathType" : @"1",
+                            @"imgType" : @"6"
+                            };
+    } else if (asset.mediaType == PHAssetMediaTypeVideo) {
+        customParameter = @{@"pathType" : @"2",
+                            @"imgType" : @"6"
+                            };
+    }
+    MHUploadModel *uploadModel = [MHUploadModel assetConvertUploadModel:asset uploadRequestUrl:(NSString *)uploadRequestUrl customParameter:customParameter];
+    [self.fileArray addObject:uploadModel];
     __weak typeof(self) weakSelf = self;
     [picker dismissViewControllerAnimated:YES completion:^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -78,7 +92,7 @@ MHUploadManagerDelegate
 
 - (IBAction)uploadFileAction:(id)sender {
     for (NSInteger i = 0; i < self.fileArray.count; i++) {
-        MHUploadModel *uploadModel = [MHUploadModel assetConvertUploadModel:self.fileArray[i]];
+        MHUploadModel *uploadModel = self.fileArray[i];
         [[MHUploadManager shareManager] addDownloadQueue:uploadModel];
     }
 }
@@ -99,7 +113,7 @@ MHUploadManagerDelegate
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MHImageItemCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([MHImageItemCollectionViewCell class]) forIndexPath:indexPath];
     //正常来说，这里不会这么写，demo就别介意了
-    MHUploadModel *uploadModel = [MHUploadModel assetConvertUploadModel:self.fileArray[indexPath.row]];
+    MHUploadModel *uploadModel = self.fileArray[indexPath.row];
     [cell.imageView setImage:[UIImage imageWithData:uploadModel.fileData]];
     return cell;
 }

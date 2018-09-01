@@ -23,10 +23,6 @@ NSURLSessionDataDelegate
 @property (strong, nonatomic) NSMutableArray *uploadTasks;
 /** 队列最大操作数 */
 @property (assign, nonatomic) NSInteger maxConcurrentOperationCount;
-/** 远程地址 */
-@property (strong, nonatomic) NSString *uploadRequestUrl;
-/** 自定义参数<##> */
-@property (strong, nonatomic) NSDictionary *customParameter;
 
 @end
 
@@ -41,10 +37,7 @@ NSURLSessionDataDelegate
         uploadManager.uploadTasks = [NSMutableArray array];
         uploadManager.maxConcurrentOperationCount = kMaxConcurrentOperationCount;
         [uploadManager.operationQueue setMaxConcurrentOperationCount:kMaxConcurrentOperationCount];
-        uploadManager.uploadRequestUrl = @"http://116.249.89.74:9090/xyrcf/api/v1/FileRest/upload/?access_token=c8dd4d40-fbc8-408f-b332-b7c57bec0b64";
-        uploadManager.customParameter = @{@"pathType" : @"1",
-                                          @"imgType" : @"6"
-                                          };
+        
     });
     return uploadManager;
 }
@@ -54,20 +47,13 @@ NSURLSessionDataDelegate
     [[MHUploadManager shareManager].operationQueue setMaxConcurrentOperationCount:count];
 }
 
-+ (void)setUploadRequestUrl:(NSString *)requestUrl {
-    [MHUploadManager shareManager].uploadRequestUrl = requestUrl;
-}
-
-+ (void)setCustomParameter:(NSDictionary *)customParameter {
-    [MHUploadManager shareManager].customParameter = customParameter;
-}
-
 /**
  添加队列
  
  @param uploadModel 对象
  */
 - (void)addDownloadQueue:(MHUploadModel *)uploadModel {
+    NSAssert(![MHUtil stringIsEmpty:uploadModel.uploadRequestUrl], @"服务器地址不能为空！");
     NSAssert(![MHUtil stringIsEmpty:uploadModel.fileName], @"文件名称不能为空！");
     MHUploadModel *originModel = [self fetchUploadModelWithFileName:uploadModel.fileName];
     if (originModel) {
@@ -101,10 +87,10 @@ NSURLSessionDataDelegate
 
 - (NSURLSessionUploadTask *) uploadTaskWithUploadModel:(MHUploadModel *)uploadModel
 {
-    NSDictionary *params = self.customParameter;
+    NSDictionary *params = uploadModel.customParameter;
     NSString *path = uploadModel.filePath;
     // 请求的Url
-    NSString *urlStr = [self.uploadRequestUrl stringByAppendingFormat:@"&fileName=%@",uploadModel.fileName];
+    NSString *urlStr = [uploadModel.uploadRequestUrl stringByAppendingFormat:@"&fileName=%@",uploadModel.fileName];
     NSURL *url = [NSURL URLWithString:urlStr];
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
