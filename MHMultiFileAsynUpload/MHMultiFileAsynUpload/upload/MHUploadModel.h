@@ -66,6 +66,14 @@ typedef NS_ENUM(NSInteger, MHUploadStatus) {
 @property (strong, nonatomic) NSURLSessionDataTask *task;
 
 
+/**
+ 将PHAsset转换成MHUploadModel
+
+ @param asset PHAsset 必传
+ @param uploadRequestUrl 服务器地址
+ @param customParameter 自定义参数
+ @return 操作结果
+ */
 + (MHUploadModel *)assetConvertUploadModel:(PHAsset *)asset
                           uploadRequestUrl:(NSString *)uploadRequestUrl
                            customParameter:(NSDictionary *)customParameter;

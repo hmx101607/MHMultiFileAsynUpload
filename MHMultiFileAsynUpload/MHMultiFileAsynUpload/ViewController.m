@@ -66,7 +66,7 @@ MHUploadManagerDelegate
     if (!asset) {
         return;
     }
-    NSString * uploadRequestUrl = @"http://116.249.89.74:9090/xyrcf/api/v1/FileRest/upload/?access_token=c8dd4d40-fbc8-408f-b332-b7c57bec0b64";
+    NSString * uploadRequestUrl = @"xyrcf/api/v1/FileRest/upload/?access_token=c8dd4d40-fbc8-408f-b332-b7c57bec0b64";
     NSDictionary * customParameter = nil;
     if (asset.mediaType == PHAssetMediaTypeImage) {
         customParameter = @{@"pathType" : @"1",
