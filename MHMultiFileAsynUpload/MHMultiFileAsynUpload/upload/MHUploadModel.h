@@ -41,8 +41,8 @@ typedef NS_ENUM(NSInteger, MHUploadStatus) {
 @property (strong, nonatomic) NSString *fileId;
 /** 文件名称：自定义<##> */
 @property (strong, nonatomic) NSString *fileName;
-/** 本地沙盒路径 */
-@property (strong, nonatomic) NSString *filePath;
+/** 存放在服务器的文件地址 */
+@property (strong, nonatomic) NSString *fileUrl;
 /** 文件类型 */
 @property (assign, nonatomic) MHUploadFileType uploadFileType;
 /** 上传状态 */
@@ -51,6 +51,8 @@ typedef NS_ENUM(NSInteger, MHUploadStatus) {
 @property (strong, nonatomic) NSString *uploadRequestUrl;
 /** 自定义参数 */
 @property (strong, nonatomic) NSDictionary *customParameter;
+/** 失败重试次数<##> */
+@property (assign, nonatomic) NSInteger faileRetryCount;
 
 /** NSData */
 @property (strong, nonatomic) NSData * fileData;
@@ -58,6 +60,8 @@ typedef NS_ENUM(NSInteger, MHUploadStatus) {
 @property (assign, nonatomic) NSInteger totalSize;
 /** 当前下载大小 : KB */
 @property (assign, nonatomic) NSInteger currentSize;
+/** 返回的数据 */
+@property (strong, nonatomic) NSData *responseData;
 /** <##> */
 @property (strong, nonatomic) NSURLSessionDataTask *task;
 

@@ -9,6 +9,7 @@
 #import "MHURLSessionTaskOperation.h"
 #import <AFNetworking/AFNetworking.h>
 #import "MHUtil.h"
+#import "MHUploadFileDatabase.h"
 
 /*
  1.选择图片开始上传后，添加到队列并同时保存到数据（等待上传状态）
@@ -32,7 +33,8 @@ NSURLSessionDataDelegate
 @property (strong, nonatomic) NSMutableArray *uploadTasks;
 /** 队列最大操作数 */
 @property (assign, nonatomic) NSInteger maxConcurrentOperationCount;
-
+/** 失败重试次数<##> */
+@property (assign, nonatomic) NSInteger faileRetryCount;
 @end
 
 @implementation MHUploadManager
@@ -46,6 +48,7 @@ NSURLSessionDataDelegate
         uploadManager.uploadTasks = [NSMutableArray array];
         uploadManager.maxConcurrentOperationCount = kMaxConcurrentOperationCount;
         [uploadManager.operationQueue setMaxConcurrentOperationCount:kMaxConcurrentOperationCount];
+        uploadManager.faileRetryCount = 3;
         
     });
     return uploadManager;
@@ -70,10 +73,13 @@ NSURLSessionDataDelegate
     }
     NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,  NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:uploadModel.fileName];
     NSLog(@"path : %@", path);
-    uploadModel.filePath = path;
+    uploadModel.uploadStatus = MHUploadStatusUploadWait;
     BOOL success = [[NSFileManager defaultManager] createFileAtPath:path contents:uploadModel.fileData attributes:nil];
     if (success) {
-        //
+        //将基础数据插入数据库
+        [[MHUploadFileDatabase shareInstance] insertFileWithFileName:uploadModel.fileName uploadRequestUrl:uploadModel.uploadRequestUrl uploadFileType:uploadModel.uploadFileType uploadStatus:MHUploadStatusUploadWait customPatameter:uploadModel.customParameter];
+        
+        //加入上传队列
         [self.uploadTasks addObject:uploadModel];
         [self startUploadWithModel:uploadModel];
     }
@@ -98,7 +104,7 @@ NSURLSessionDataDelegate
 - (NSURLSessionUploadTask *) uploadTaskWithUploadModel:(MHUploadModel *)uploadModel
 {
     NSDictionary *params = uploadModel.customParameter;
-    NSString *path = uploadModel.filePath;
+    NSString *path = [MHUtil cacheDocumentPathWithFileName:uploadModel.fileName];
     // 请求的Url
     NSString *urlStr = [uploadModel.uploadRequestUrl stringByAppendingFormat:@"&fileName=%@",uploadModel.fileName];
     NSURL *url = [NSURL URLWithString:urlStr];
@@ -124,15 +130,6 @@ NSURLSessionDataDelegate
 
 #pragma mark - +++++++++++++++++++++ NSURLSessionDataDelegate start ++++++++++++++++++++++++
 - (void)URLSession:(NSURLSession *)session
-          dataTask:(NSURLSessionDataTask *)dataTask
-didReceiveResponse:(NSURLResponse *)response
- completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
-    NSLog(@"thread : %@, 开始下载 --- %s", [NSThread currentThread], __func__);
-    
-    completionHandler (NSURLSessionResponseAllow);
-}
-
-- (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
    didSendBodyData:(int64_t)bytesSent
     totalBytesSent:(int64_t)totalBytesSent
@@ -147,6 +144,9 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
     if (bytesSent == totalBytesExpectedToSend) {
         //说明正式开始上传：更新数据库文件的状态，以及需要上传的文件总大小
         uploadModel.uploadStatus = MHUploadStatusUploading;
+        //更新下载状态
+        [[MHUploadFileDatabase shareInstance] updateUploadStatusWithFileName:uploadModel.fileName uploadStatus:uploadModel.uploadStatus fileUrl:nil faileRetryCount:1];
+        //回调
         if ([self.delegate respondsToSelector:@selector(uploadStartWithUploadModel:)]) {
             [self.delegate uploadStartWithUploadModel:uploadModel];
         }
@@ -155,6 +155,19 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
             [self.delegate uploadProgressWithUploadModel:uploadModel];
         }
     }
+}
+
+-(void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+    NSLog(@"didReceiveData--%@",[NSThread currentThread]);
+    NSString *fileName = [self fetchFileNameWithUrl:dataTask.currentRequest.URL.absoluteString];
+    if ([MHUtil stringIsEmpty:fileName]) {
+        return;
+    }
+    MHUploadModel *uploadModel = [self fetchUploadModelWithFileName:fileName];
+    NSMutableData *responData = [[NSMutableData alloc] init];
+    [responData appendData:uploadModel.responseData];
+    [responData appendData:data];
+    uploadModel.responseData = responData;
 }
 
 - (void)URLSession:(NSURLSession *)session
@@ -167,9 +180,68 @@ didCompleteWithError:(nullable NSError *)error{
     }
     MHUploadModel *uploadModel = [self fetchUploadModelWithFileName:fileName];
     if (error) {
-        uploadModel.uploadStatus = MHUploadStatusUploadFail;
+        //失败自动重传三次
+        if (uploadModel.faileRetryCount < [MHUploadManager shareManager].faileRetryCount) {
+            MHUploadModel *model = uploadModel;
+            [self removeUploadModelWithFileName:uploadModel.fileName];
+            model.uploadStatus = MHUploadStatusUploadWait;
+            model.faileRetryCount++;
+            //更新下载状态
+            [[MHUploadFileDatabase shareInstance] updateUploadStatusWithFileName:model.fileName uploadStatus:model.uploadStatus fileUrl:nil faileRetryCount:model.faileRetryCount];
+            //加入上传队列
+            [self.uploadTasks addObject:uploadModel];
+            [self startUploadWithModel:uploadModel];
+        } else {
+            //终止所有请求，并清除数据
+            [[MHUploadManager shareManager].operationQueue cancelAllOperations];
+            NSError *error = [NSError errorWithDomain:@"上传失败" code:1001 userInfo:nil];
+            [self completeUploadTaskError:error];
+        }
     } else {
         uploadModel.uploadStatus = MHUploadStatusUploadComplete;
+        //拼接服务器返回的数据
+        NSError *error;
+        NSDictionary *jsonDic = [NSJSONSerialization JSONObjectWithData:uploadModel.responseData options:NSJSONReadingMutableContainers error:&error];
+        if (!error) {
+            if ([self.delegate respondsToSelector:@selector(fetchUrlWithResponse:)]) {
+                NSString *fileUrl = [self.delegate fetchUrlWithResponse:jsonDic];
+                uploadModel.fileUrl = fileUrl;
+                //更新下载状态
+                [[MHUploadFileDatabase shareInstance] updateUploadStatusWithFileName:uploadModel.fileName uploadStatus:uploadModel.uploadStatus fileUrl:fileUrl faileRetryCount:uploadModel.faileRetryCount];
+            }
+        }
+        if ([MHUploadManager shareManager].operationQueue.operationCount == 0) {
+            [self completeUploadTaskError:nil];
+        }
+    }
+}
+
+- (void) completeUploadTaskError:(NSError *)error {
+    
+    //删除沙盒中的文件数据
+    NSArray *uploadFiles = [[MHUploadFileDatabase shareInstance] findAllFile];
+    [uploadFiles enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        MHUploadModel *model = obj;
+        [[NSFileManager defaultManager] removeItemAtPath:[MHUtil cacheDocumentPathWithFileName:model.fileName] error:nil];
+    }];
+    //上传完成，删除所有数据
+    [[MHUploadFileDatabase shareInstance] deleteAllFile];
+    //队列中的任务全部结束
+    if ([self.delegate respondsToSelector:@selector(uploadAllTaskCompletionWithUploadModel:error:)]) {
+        [self.delegate uploadAllTaskCompletionWithUploadModel:self.uploadTasks error:error];
+    }
+    [self.uploadTasks removeAllObjects];
+}
+
+#pragma mark - 根据filePath移除下载任务
+- (void)removeUploadModelWithFileName:(NSString *)fileName {
+    @synchronized(self.uploadTasks) {
+        for (MHUploadModel *model in self.uploadTasks) {
+            if ([model.fileName isEqualToString:fileName]) {
+                [self.uploadTasks removeObject:model];
+                break;
+            }
+        }
     }
 }
 

@@ -16,9 +16,15 @@ typedef  void(^uploadProgressBlock)(NSInteger *index, NSProgress *uploadProgress
 
 @protocol MHUploadManagerDelegate <NSObject>
 
+@optional
 - (void)uploadStartWithUploadModel:(MHUploadModel *)uploadModel;
 - (void)uploadProgressWithUploadModel:(MHUploadModel *)uploadModel;
 - (void)uploadCompletionWithUploadModel:(MHUploadModel *)uploadModel error:(NSError *)error;
+
+- (void)uploadAllTaskCompletionWithUploadModel:(NSArray <MHUploadModel *> *)uploadModels error:(NSError *)error;
+
+/** 获取服务器返回的数据：回调解析 */
+- (NSString *)fetchUrlWithResponse:(NSDictionary *)response;
 
 @end
 

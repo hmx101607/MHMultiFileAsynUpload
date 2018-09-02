@@ -143,6 +143,16 @@ MHUploadManagerDelegate
     NSLog(@"%s : 完成下载", __func__);
 }
 
+- (void)uploadAllTaskCompletionWithUploadModel:(NSArray<MHUploadModel *> *)uploadModels error:(NSError *)error {
+    NSLog(@"%s : 所有任务完成下载， error ： %@", __func__, error);
+}
+
+- (NSString *)fetchUrlWithResponse:(NSDictionary *)response {
+    if ([[response objectForKey:@"status"] integerValue] == 1000) {
+        return [response objectForKey:@"url"];
+    }
+    return nil;
+}
 
 - (NSMutableArray *)fileArray {
     if (!_fileArray) {
