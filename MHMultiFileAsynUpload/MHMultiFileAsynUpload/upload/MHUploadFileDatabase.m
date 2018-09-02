@@ -37,7 +37,6 @@
         fileDatabase = [MHUploadFileDatabase new];
         NSString *sqliteName = [NSString stringWithFormat:@"%@.sqlite", NSStringFromClass([self class])];
         NSString *fileName = [MHUtil cacheDocumentPathWithFileName:sqliteName];
-        NSLog(@"fileName : %@", fileName);
         fileDatabase.databaseQueue = [FMDatabaseQueue databaseQueueWithPath:fileName];
     });
     return fileDatabase;

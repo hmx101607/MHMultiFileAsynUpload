@@ -71,8 +71,7 @@ NSURLSessionDataDelegate
     if (originModel) {
         return;
     }
-    NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,  NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:uploadModel.fileName];
-    NSLog(@"path : %@", path);
+    NSString *path = [MHUtil cacheDocumentPathWithFileName:uploadModel.fileName];
     uploadModel.uploadStatus = MHUploadStatusUploadWait;
     BOOL success = [[NSFileManager defaultManager] createFileAtPath:path contents:uploadModel.fileData attributes:nil];
     if (success) {
@@ -87,6 +86,9 @@ NSURLSessionDataDelegate
 
 #pragma mark - 开始下载
 - (void)startUploadWithModel:(MHUploadModel *)uploadModel {
+    if (!uploadModel) {
+        return;
+    }
     uploadModel.uploadStatus = MHUploadStatusUploadWait;
     NSURLSessionDataTask *task = uploadModel.task;
     if (task && task.state == NSURLSessionTaskStateRunning) {
@@ -95,7 +97,6 @@ NSURLSessionDataDelegate
     __weak typeof(self) weakSelf = self;
     MHURLSessionTaskOperation *operation = [MHURLSessionTaskOperation operationWithURLSessionTask:nil sessionBlock:^NSURLSessionTask *{
         __strong typeof(weakSelf) strongSelf = weakSelf;
-        NSLog(@"thread : %@, MHCustomOperation operationWithURLSessionTask", [NSThread currentThread]);
         return [strongSelf uploadTaskWithUploadModel:uploadModel];
     }];
     [self.operationQueue addOperation:operation];
@@ -121,7 +122,6 @@ NSURLSessionDataDelegate
     NSData *httpBody = [self createBodyWithBoundary:boundary parameters:params paths:@[path] fieldName:fieldName];
     
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
-    NSLog(@"thread : %@, 执行下载 --- %s", [NSThread currentThread], __func__);
     
     NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request fromData:httpBody];
     uploadModel.task = uploadTask;
@@ -158,7 +158,6 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 }
 
 -(void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-    NSLog(@"didReceiveData--%@",[NSThread currentThread]);
     NSString *fileName = [self fetchFileNameWithUrl:dataTask.currentRequest.URL.absoluteString];
     if ([MHUtil stringIsEmpty:fileName]) {
         return;
@@ -173,7 +172,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(nullable NSError *)error{
-    NSLog(@"thread : %@, 下载完成 --- %s", [NSThread currentThread], __func__);
+    NSLog(@"thread : %@, 上传完成 --- %s", [NSThread currentThread], __func__);
     NSString *fileName = [self fetchFileNameWithUrl:task.currentRequest.URL.absoluteString];
     if ([MHUtil stringIsEmpty:fileName]) {
         return;
@@ -186,6 +185,9 @@ didCompleteWithError:(nullable NSError *)error{
             [self removeUploadModelWithFileName:uploadModel.fileName];
             model.uploadStatus = MHUploadStatusUploadWait;
             model.faileRetryCount++;
+            if (!uploadModel) {
+                return;
+            }
             //更新下载状态
             [[MHUploadFileDatabase shareInstance] updateUploadStatusWithFileName:model.fileName uploadStatus:model.uploadStatus fileUrl:nil faileRetryCount:model.faileRetryCount];
             //加入上传队列
