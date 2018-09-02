@@ -7,7 +7,6 @@ target 'MHMultiFileAsynUpload' do
 
   # Pods for MHMultiFileAsynUpload
 
-  pod 'AFNetworking'
   pod 'FMDB'
 
 end

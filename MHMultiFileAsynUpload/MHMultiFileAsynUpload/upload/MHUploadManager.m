@@ -7,7 +7,7 @@
 
 #import "MHUploadManager.h"
 #import "MHURLSessionTaskOperation.h"
-#import <AFNetworking/AFNetworking.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "MHUtil.h"
 #import "MHUploadFileDatabase.h"
 
