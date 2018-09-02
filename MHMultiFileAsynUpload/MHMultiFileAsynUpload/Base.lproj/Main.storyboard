@@ -19,16 +19,9 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FTC-9J-U3Z">
                                 <rect key="frame" x="156" y="537" width="62" height="30"/>
-                                <state key="normal" title="选择视频"/>
-                                <connections>
-                                    <action selector="chooseVideoAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8nT-x0-BHa"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RK1-vK-s4l">
-                                <rect key="frame" x="54" y="537" width="62" height="30"/>
                                 <state key="normal" title="选择照片"/>
                                 <connections>
-                                    <action selector="choosePictureAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1xF-L9-EcK"/>
+                                    <action selector="choosePictureAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZMP-T6-hNn"/>
                                 </connections>
                             </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="I2a-je-OiE">
@@ -85,7 +78,6 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="FTC-9J-U3Z" firstAttribute="top" secondItem="I2a-je-OiE" secondAttribute="bottom" constant="30" id="1D2-at-uh3"/>
-                            <constraint firstItem="RK1-vK-s4l" firstAttribute="centerY" secondItem="FTC-9J-U3Z" secondAttribute="centerY" id="59U-2y-2WR"/>
                             <constraint firstItem="I2a-je-OiE" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="66l-1Q-AUe"/>
                             <constraint firstItem="I2a-je-OiE" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="64" id="8Co-fv-c1d"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="FTC-9J-U3Z" secondAttribute="bottom" constant="100" id="A0f-44-NOS"/>
@@ -95,7 +87,6 @@
                             <constraint firstItem="l1G-uK-WdZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="Ny3-MW-9BA"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="l1G-uK-WdZ" secondAttribute="trailing" constant="20" id="V0Z-mh-FLB"/>
                             <constraint firstItem="FTC-9J-U3Z" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Wso-Fa-tNE"/>
-                            <constraint firstItem="FTC-9J-U3Z" firstAttribute="leading" secondItem="RK1-vK-s4l" secondAttribute="trailing" constant="40" id="ZZ2-d0-6kd"/>
                             <constraint firstItem="181-YB-Xmu" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="c4G-G0-8hg"/>
                             <constraint firstItem="l1G-uK-WdZ" firstAttribute="top" secondItem="I2a-je-OiE" secondAttribute="bottom" id="dIG-o3-Qei"/>
                             <constraint firstItem="I2a-je-OiE" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="o4U-iZ-Jpc"/>
