@@ -63,8 +63,9 @@ MHUploadManagerDelegate
     NSURL *url = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     PHFetchResult *fetchResult = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
     PHAsset *asset = fetchResult.firstObject;
-    
-    
+    if (!asset) {
+        return;
+    }
     NSString * uploadRequestUrl = @"http://116.249.89.74:9090/xyrcf/api/v1/FileRest/upload/?access_token=c8dd4d40-fbc8-408f-b332-b7c57bec0b64";
     NSDictionary * customParameter = nil;
     if (asset.mediaType == PHAssetMediaTypeImage) {
@@ -112,7 +113,6 @@ MHUploadManagerDelegate
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MHImageItemCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([MHImageItemCollectionViewCell class]) forIndexPath:indexPath];
-    //正常来说，这里不会这么写，demo就别介意了
     MHUploadModel *uploadModel = self.fileArray[indexPath.row];
     [cell.imageView setImage:[UIImage imageWithData:uploadModel.fileData]];
     return cell;
